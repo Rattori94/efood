@@ -1,37 +1,7 @@
 # efood
 
-Projeto desenvolvido durante o módulo de **React da EBAC**.
+Um site de delivery de comida: lista os restaurantes disponíveis, mostra o cardápio de cada um, abre uma modal com os detalhes de cada prato e permite montar um pedido inteiro pelo carrinho, com um checkout dividido em entrega e pagamento até a confirmação final.
 
-A proposta foi criar uma aplicação de delivery de comida, consumindo os dados de restaurantes e seus respectivos cardápios através de uma API. Durante o desenvolvimento, trabalhei com rotas, componentes, gerenciamento de estado, formulários e integração com API.
+Esse foi o projeto onde consumo de API deixou de ser um exercício isolado e virou a espinha dorsal da aplicação inteira: os restaurantes e os cardápios vêm todos de uma API real via RTK Query, então boa parte do trabalho foi pensar em estados de carregamento, erro e o que mostrar enquanto os dados ainda não chegaram. A modal do produto também me ensinou uma lição que só se aprende na prática: parecia pronta, mas clicar fora dela não fechava, porque duas camadas sobrepostas estavam competindo pelo clique — só entendi o bug de verdade perguntando qual elemento realmente recebia aquele clique. O carrinho e o checkout usam Formik com Yup pra validar cada campo (nome, endereço, CEP, dados do cartão) antes de deixar avançar de etapa, o que me obrigou a pensar em formulário como um fluxo de várias telas, não só um `<form>` solto. E o aprendizado que mais ficou foi depois do deploy: o app funcionava perfeito clicando dentro dele, mas dava 404 se alguém recarregasse a página do restaurante — porque o React Router cria rotas que só existem no navegador, e o servidor da Vercel não sabia disso até eu configurar um rewrite. Foi a primeira vez que um bug meu só existia em produção, não na minha máquina.
 
-O projeto conta com listagem de restaurantes, página individual de cada restaurante, detalhes dos produtos, carrinho e checkout.
-
-## Demo
-
-[https://efood-eight-tau.vercel.app/](https://efood-eight-tau.vercel.app/)
-
-## Tecnologias utilizadas
-
-- React
-- TypeScript
-- Vite
-- Redux Toolkit
-- RTK Query
-- React Router
-- styled-components
-- Formik
-- Yup
-
-## Funcionalidades
-
-- Listagem de restaurantes
-- Página individual para cada restaurante
-- Cardápio com os produtos disponíveis
-- Modal com detalhes dos produtos
-- Adição e remoção de produtos do carrinho
-- Cálculo do valor total do pedido
-- Checkout dividido em etapas
-- Validação dos formulários
-- Integração com API
-- Rotas dinâmicas utilizando React Router
-- Deploy na Vercel
+Tecnologias e ferramentas usadas: React, TypeScript, Vite, Redux Toolkit com RTK Query, styled-components, Formik e Yup para os formulários, e deploy na Vercel.
