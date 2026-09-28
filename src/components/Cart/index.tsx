@@ -25,7 +25,8 @@ const Cart = () => {
   const dispatch = useDispatch()
   const { itens, aberto } = useSelector((state: RootReducer) => state.cart)
   const [etapa, setEtapa] = useState<Etapa>('carrinho')
-  const [purchase, { data, isLoading, isSuccess }] = usePurchaseMutation()
+  const [purchase, { data, isLoading, isSuccess, isError, reset }] =
+    usePurchaseMutation()
 
   const total = itens.reduce((acc, item) => acc + item.preco, 0)
   const pagando = etapa === 'pagamento'
@@ -136,19 +137,20 @@ const Cart = () => {
     }
   }
 
-  const fechar = () => {
-    dispatch(close())
-    if (etapa === 'confirmacao') {
-      setEtapa('carrinho')
-      form.resetForm()
-    }
-  }
-
   const concluir = () => {
     dispatch(clear())
     dispatch(close())
     form.resetForm()
+    reset()
     setEtapa('carrinho')
+  }
+
+  const fechar = () => {
+    if (etapa === 'confirmacao') {
+      concluir()
+    } else {
+      dispatch(close())
+    }
   }
 
   return (
@@ -194,7 +196,12 @@ const Cart = () => {
         )}
 
         {etapa === 'entrega' && (
-          <form onSubmit={form.handleSubmit}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              irParaPagamento()
+            }}
+          >
             <S.Titulo>Entrega</S.Titulo>
             <S.Campo>
               <label htmlFor="receiver">Quem irá receber</label>
@@ -276,7 +283,7 @@ const Cart = () => {
                 onBlur={form.handleBlur}
               />
             </S.Campo>
-            <S.BotaoPrincipal type="button" onClick={irParaPagamento}>
+            <S.BotaoPrincipal type="submit">
               Continuar com o pagamento
             </S.BotaoPrincipal>
             <S.Botao type="button" onClick={() => setEtapa('carrinho')}>
@@ -361,6 +368,11 @@ const Cart = () => {
                 {mensagem('expiresYear')}
               </S.Campo>
             </S.Linha>
+            {isError && (
+              <S.Erro role="alert">
+                Não foi possível finalizar o pedido. Tente novamente.
+              </S.Erro>
+            )}
             <S.BotaoPrincipal type="submit" disabled={isLoading}>
               {isLoading ? 'Finalizando...' : 'Finalizar pagamento'}
             </S.BotaoPrincipal>
